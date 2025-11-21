@@ -35,6 +35,7 @@ pip install -r requirements.txt
 FIRECRAWL_API_KEY=...   # or FIRECRAWL_API as an alias
 YOUTUBE_API_KEY=...
 INSTAGRAM_TOKEN=...
+INSTAGRAM_USER_ID=...   # required for IG hashtag search
 ETSY_API_KEY=...   # optional
 DATABASE_URL=sqlite:///./niche.db
 ```

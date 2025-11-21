@@ -35,4 +35,21 @@ def extract_listings(client: FirecrawlClient, urls: List[str]) -> List[Dict[str,
         "list of tags, materials, and 3-7 inferred SEO keywords customers might use."
     )
     response = client.extract(urls=urls, prompt=prompt, schema=schema)
-    return response.get("results", [])
+    raw = response.get("results") or response.get("data") or []
+    listings: List[Dict[str, Any]] = []
+    for item in raw:
+        data = item.get("data", item) if isinstance(item, dict) else {}
+        listings.append(
+            {
+                "url": item.get("url") if isinstance(item, dict) else None,
+                "title": data.get("title"),
+                "price": data.get("price"),
+                "currency": data.get("currency"),
+                "rating": data.get("rating"),
+                "review_count": data.get("review_count"),
+                "tags": data.get("tags"),
+                "materials": data.get("materials"),
+                "inferred_keywords": data.get("inferred_keywords"),
+            }
+        )
+    return listings

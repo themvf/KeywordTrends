@@ -18,6 +18,7 @@ class Settings:
     firecrawl_api_key: Optional[str]
     youtube_api_key: Optional[str]
     instagram_token: Optional[str]
+    instagram_user_id: Optional[str]
     etsy_api_key: Optional[str]
     database_url: str = "sqlite:///./niche.db"
     default_language: str = "en"
@@ -40,6 +41,7 @@ def get_settings() -> Settings:
         firecrawl_api_key=firecrawl_key,
         youtube_api_key=_get_secret("YOUTUBE_API_KEY"),
         instagram_token=_get_secret("INSTAGRAM_TOKEN"),
+        instagram_user_id=_get_secret("INSTAGRAM_USER_ID"),
         etsy_api_key=_get_secret("ETSY_API_KEY"),
         database_url=_get_secret("DATABASE_URL") or "sqlite:///./niche.db",
         default_language=os.getenv("DEFAULT_LANGUAGE", "en"),
