@@ -34,8 +34,10 @@ def _get_secret(name: str) -> Optional[str]:
 
 
 def get_settings() -> Settings:
+    # Accept both FIRECRAWL_API_KEY (preferred) and FIRECRAWL_API (alias)
+    firecrawl_key = _get_secret("FIRECRAWL_API_KEY") or _get_secret("FIRECRAWL_API")
     return Settings(
-        firecrawl_api_key=_get_secret("FIRECRAWL_API_KEY"),
+        firecrawl_api_key=firecrawl_key,
         youtube_api_key=_get_secret("YOUTUBE_API_KEY"),
         instagram_token=_get_secret("INSTAGRAM_TOKEN"),
         etsy_api_key=_get_secret("ETSY_API_KEY"),
