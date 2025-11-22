@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add project root to sys.path so we can import 'app'
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import streamlit as st
 
 from app.analysis.keywords import merge_platform_counts
