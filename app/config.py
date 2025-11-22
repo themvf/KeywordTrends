@@ -43,7 +43,7 @@ def get_settings() -> Settings:
         instagram_token=_get_secret("INSTAGRAM_TOKEN"),
         instagram_user_id=_get_secret("INSTAGRAM_USER_ID"),
         etsy_api_key=_get_secret("ETSY_API_KEY"),
-        database_url=_get_secret("DATABASE_URL") or "sqlite:///./niche.db",
+        database_url=_get_secret("DATABASE_URL") or f"sqlite:///{os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'niche.db'))}",
         default_language=os.getenv("DEFAULT_LANGUAGE", "en"),
         default_country=os.getenv("DEFAULT_COUNTRY", "US"),
     )
