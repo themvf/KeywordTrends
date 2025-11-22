@@ -10,7 +10,16 @@ class YouTubeClient:
         self.base_url = "https://www.googleapis.com/youtube/v3"
         self._client = httpx.Client(timeout=20)
 
-    @retry(wait=wait_exponential(min=1, max=8), stop=stop_after_attempt(3))
+    def _check_response(self, resp: httpx.Response) -> None:
+        if resp.is_error:
+            print(f"YouTube Error {resp.status_code}: {resp.text}")
+            resp.raise_for_status()
+
+    @retry(
+        wait=wait_exponential(min=1, max=8),
+        stop=stop_after_attempt(3),
+        reraise=True,
+    )
     def search_videos(
         self,
         query: str,
@@ -28,7 +37,7 @@ class YouTubeClient:
             "order": order,
         }
         resp = self._client.get(f"{self.base_url}/search", params=params)
-        resp.raise_for_status()
+        self._check_response(resp)
         data = resp.json()
         return [item["id"]["videoId"] for item in data.get("items", []) if "videoId" in item.get("id", {})]
 
@@ -42,7 +51,7 @@ class YouTubeClient:
             "key": self.api_key,
         }
         resp = self._client.get(f"{self.base_url}/videos", params=params)
-        resp.raise_for_status()
+        self._check_response(resp)
         data = resp.json()
         return data.get("items", [])
 

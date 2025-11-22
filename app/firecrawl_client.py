@@ -13,7 +13,16 @@ class FirecrawlClient:
     def _headers(self) -> Dict[str, str]:
         return {"Authorization": f"Bearer {self.api_key}"}
 
-    @retry(wait=wait_exponential(min=1, max=10), stop=stop_after_attempt(3))
+    def _check_response(self, resp: httpx.Response) -> None:
+        if resp.is_error:
+            print(f"Firecrawl Error {resp.status_code}: {resp.text}")
+            resp.raise_for_status()
+
+    @retry(
+        wait=wait_exponential(min=1, max=10),
+        stop=stop_after_attempt(3),
+        reraise=True,
+    )
     def search(
         self,
         query: str,
@@ -31,7 +40,7 @@ class FirecrawlClient:
             json=payload,
             headers=self._headers(),
         )
-        resp.raise_for_status()
+        self._check_response(resp)
         return resp.json()
 
     @retry(wait=wait_exponential(min=1, max=10), stop=stop_after_attempt(3))
@@ -53,5 +62,5 @@ class FirecrawlClient:
             json=payload,
             headers=self._headers(),
         )
-        resp.raise_for_status()
+        self._check_response(resp)
         return resp.json()
