@@ -37,19 +37,26 @@ def normalize_text(text: str) -> str:
 
 
 def extract_ngrams(texts: Iterable[str], n: int = 1, max_features: int = 500) -> Tuple[List[str], List[int]]:
-    vectorizer = CountVectorizer(ngram_range=(n, n), max_features=max_features)
-    matrix = vectorizer.fit_transform(texts)
-    counts = matrix.sum(axis=0).A1
-    terms = vectorizer.get_feature_names_out()
-    return list(terms), list(counts)
+    try:
+        vectorizer = CountVectorizer(ngram_range=(n, n), max_features=max_features)
+        matrix = vectorizer.fit_transform(texts)
+        counts = matrix.sum(axis=0).A1
+        terms = vectorizer.get_feature_names_out()
+        return list(terms), list(counts)
+    except ValueError:
+        # Handle empty vocabulary (e.g., empty input or only stop words)
+        return [], []
 
 
 def tfidf_keywords(texts: Iterable[str], max_features: int = 500) -> Dict[str, float]:
-    vectorizer = TfidfVectorizer(max_features=max_features)
-    matrix = vectorizer.fit_transform(texts)
-    scores = matrix.sum(axis=0).A1
-    terms = vectorizer.get_feature_names_out()
-    return dict(zip(terms, scores))
+    try:
+        vectorizer = TfidfVectorizer(max_features=max_features)
+        matrix = vectorizer.fit_transform(texts)
+        scores = matrix.sum(axis=0).A1
+        terms = vectorizer.get_feature_names_out()
+        return dict(zip(terms, scores))
+    except ValueError:
+        return {}
 
 
 def merge_platform_counts(platform_texts: Dict[str, List[str]]) -> pd.DataFrame:
